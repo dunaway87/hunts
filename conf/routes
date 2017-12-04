@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                                       Blank.index
-GET     /drawHunts                                Blank.index
 
 
 #api routes are not visible to users, e.g. ajax requests

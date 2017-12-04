@@ -80,7 +80,7 @@ module.exports = Marionette.LayoutView.extend({
 		var lat = this.options.model.attributes.lat;
 		var lon = this.options.model.attributes.lon;
 
-		var url = "http://localhost:9000/pointData?lat="+lat+"&lon="+lon;
+		var url = "/pointData?lat="+lat+"&lon="+lon;
 		console.log(url);
 
 
