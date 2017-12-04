@@ -14,7 +14,6 @@ application.log
 
 application.log.*
 
-/node_modules
 /tmp
 
 /db-1.1.1
