@@ -12,6 +12,7 @@ var hunt_title_tmpl = require('draw-hunts/HuntTitle.tmpl')
 
 //var modal_hunts_tmpl = require('draw-hunts/ModalHunts.tmpl');
 //var modal_hunt_summary_tmpl = require('draw-hunts/ModalHuntSummary.tmpl');
+var FilterModel = require('models/FilterModel');
 
 module.exports = Marionette.LayoutView.extend({
 	    
@@ -76,11 +77,28 @@ module.exports = Marionette.LayoutView.extend({
 	},
 
 	showHunts:function(){
+
+		log.debug("filtermodel in  summaryview %o", FilterModel)
+
 		var that = this;
 		var lat = this.options.model.attributes.lat;
 		var lon = this.options.model.attributes.lon;
 
 		var url = "/pointData?lat="+lat+"&lon="+lon;
+		if(FilterModel.has("species")){
+			url = url +"&species="+FilterModel.get("species")
+		}
+
+		if(FilterModel.has("unit")){
+			url = url +"&unit="+FilterModel.get("unit")
+		}
+
+		if(FilterModel.has("subunit")){
+			url = url +"&subunit="+FilterModel.get("subunit")
+		}
+
+
+
 		console.log(url);
 
 
@@ -98,53 +116,61 @@ module.exports = Marionette.LayoutView.extend({
 
 		});	
 
-		
 		var collection = new HuntCollection();
 		var modal_hunts = {}
 		var layergroup = new L.LayerGroup();
 		collection.fetch().done(function(){
 			console.log("collection %o ", collection)
-			modal_hunts = new ModalHunts({
-				collection:collection
-			})
-			that.getRegion('modal_hunts').show(modal_hunts)
+
+			if(collection.models[0].attributes.properties){
+			
 
 
-			modal_hunts.on("childview:show:huntsummary", function(childview,args){
-				that.options.map.removeLayer(that.options.wmsLayer)
-				console.log("hunt summary %o ", args)
-				var hunt_summary = new HuntSummaryView({
-					model:args
+
+				modal_hunts = new ModalHunts({
+					collection:collection
 				})
-				var hunt_title_view = new HuntModalTitle({
-					model:args
+				that.getRegion('modal_hunts').show(modal_hunts)
+
+
+				modal_hunts.on("childview:show:huntsummary", function(childview,args){
+					that.options.map.removeLayer(that.options.wmsLayer)
+					console.log("hunt summary %o ", args)
+					var hunt_summary = new HuntSummaryView({
+						model:args
+					})
+					var hunt_title_view = new HuntModalTitle({
+						model:args
+					})
+					console.log("hunt args %o ", args.attributes)
+					
+					
+					
+					//layergroup.clearLayers();
+
+					//that.options.geojson = args.attributes.geometry
+					//L.geoJSON(that.options.geojson).addTo(layergroup)
+					//that.options.map.addLayer(layergroup);
+					console.log(args.attributes.label)
+
+					that.options.wmsLayer = L.tileLayer.wms('http://geoblaster.info:8080/geoserver/hunts/wms',{
+						 layers:'hunts:draw_hunt',
+						 format: 'image/png',
+			        	 transparent: true,
+			        	
+					});
+
+					that.options.wmsLayer.setParams({
+						CQL_FILTER:"hunt = '"+args.attributes.label+"'"
+					})
+					that.options.map.addLayer(that.options.wmsLayer)
+
+					that.getRegion('modal_hunt_summary').show(hunt_summary)
+					that.getRegion('modal_hunt_title').show(hunt_title_view)
 				})
-				console.log("hunt args %o ", args.attributes)
-				
-				
-				
-				//layergroup.clearLayers();
-
-				//that.options.geojson = args.attributes.geometry
-				//L.geoJSON(that.options.geojson).addTo(layergroup)
-				//that.options.map.addLayer(layergroup);
-				console.log(args.attributes.label)
-
-				that.options.wmsLayer = L.tileLayer.wms('http://geoblaster.info:8080/geoserver/hunts/wms',{
-					 layers:'hunts:draw_hunt',
-					 format: 'image/png',
-		        	 transparent: true,
-		        	
-				});
-
-				that.options.wmsLayer.setParams({
-					CQL_FILTER:"hunt = '"+args.attributes.label+"'"
-				})
-				that.options.map.addLayer(that.options.wmsLayer)
-
-				that.getRegion('modal_hunt_summary').show(hunt_summary)
-				that.getRegion('modal_hunt_title').show(hunt_title_view)
-			})
+			} else {
+				that.trigger("shuttle:close");
+			}
 		});
 	
 			

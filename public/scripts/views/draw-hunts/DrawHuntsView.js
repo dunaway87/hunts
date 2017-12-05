@@ -63,12 +63,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 			var summary_modal_view = new SummaryModalView({
 				model:data
 			})
-			that.getRegion('summary_modal').show(summary_modal_view,{preventDestroy:true})
 			summary_modal_view.on("shuttle:close", function(){
 				console.log("closer")
 				that.getRegion('summary_modal').empty({preventDestroy:true})
 				$('#summary-modal').css("display","none");
 			})
+						that.getRegion('summary_modal').show(summary_modal_view,{preventDestroy:true})
+
 		})
 
 		

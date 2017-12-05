@@ -44,16 +44,12 @@ module.exports = Backbone.Marionette.CompositeView.extend({
 	getSpecies: function(){
 		 var model = this.collection.at($(':selected', this.$el).index()).attributes;
 		 log.debug("species model %o: ", model.label)
-		 if(!(FilterModel.has("species"))){
-			FilterModel.set("species",[])
-		 }
+
 		 if((FilterModel.has("species"))){
-				FilterModel.unset("species",[])
-				FilterModel.set("species", []);
+				FilterModel.unset("species",null)		 
 		 } 
 
-
-		 FilterModel.get("species").push(model.label);
+		 FilterModel.set("species",model.label)
 		 log.debug("filter model %o ", FilterModel)
 
 

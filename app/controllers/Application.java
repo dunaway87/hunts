@@ -47,7 +47,7 @@ public class Application extends Controller {
 
 		renderJSON(filters.toString());
 	}
-	public static void getPointData(double lat, double lon, String season, String unit, String subunit, String draw_rate, String hunt_success_rate, String residency, int legalAnimal, int species ){
+	public static void getPointData(double lat, double lon, String season, String unit, String subunit, String draw_rate, String hunt_success_rate, String residency, int legalAnimal, String species ){
 		JsonElement hunts = PointData.getData(lat,lon, season, unit, subunit, draw_rate, hunt_success_rate, residency, legalAnimal, species);
 
 		renderJSON(hunts);

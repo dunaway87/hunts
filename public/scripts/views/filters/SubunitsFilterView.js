@@ -46,6 +46,13 @@ module.exports = Backbone.Marionette.CompositeView.extend({
 		 var model = this.collection.at($(':selected', this.$el).index()).attributes;
 		 log.debug("subunit model %o: ", this.collection.at($(':selected', this.$el).index()).attributes)
 	
+		  if((FilterModel.has("subunit"))){
+				FilterModel.unset("subunit",null)		 
+		 } 
+
+		 FilterModel.set("subunit",model.label)
+
+
 		 this.trigger("hunt:filter", model.label);
 	},
 

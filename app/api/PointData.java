@@ -23,7 +23,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class PointData {
-	public static JsonElement getData(double lat, double lon, String seasonFilter, String unitFilter, String subunitFilter, String draw_rateFilter, String hunt_success_rateFilter, String residencyFilter, int legalAnimalFilter, int speciesFilter){
+	public static JsonElement getData(double lat, double lon, String seasonFilter, String unitFilter, String subunitFilter, String draw_rateFilter, String hunt_success_rateFilter, String residencyFilter, int legalAnimalFilter, String speciesFilter){
 		Connection conn = new DatabaseUtils().getConnection();
 
 		JsonObject hunts = new JsonObject();
@@ -97,15 +97,19 @@ public class PointData {
 	}
 	
 	
-	private static String getWhereClause(int species,String season, String unit, String subunit,
+	private static String getWhereClause(String species,String season, String unit, String subunit,
 			String draw_rate, String hunt_success_rate, String residency, int legalAnimal) {
 
 		String whereClause = "";
-		if(species != 0){
-			whereClause = whereClause.concat(" and s.id = '"+species+"' ");
+		if(!StringUtils.isEmpty(species)&& !species.toLowerCase().equals("all")){
+			whereClause = whereClause.concat(" and lower(s.species) = '"+species.toLowerCase()+"' ");
 		}
-		
-
+		if(!StringUtils.isEmpty(subunit) && !subunit.toLowerCase().equals("all")){
+			whereClause = whereClause.concat(" and lower(full_unit) like '%"+subunit.toLowerCase()+"' ");
+		}
+		if(!StringUtils.isEmpty(unit)&& !unit.toLowerCase().equals("all")){
+			whereClause = whereClause.concat(" and full_unit like '"+unit+"%' ");
+		}
 		if(legalAnimal != 0){
 			whereClause = whereClause.concat(" and la.id = '"+legalAnimal+"' ");
 		}
