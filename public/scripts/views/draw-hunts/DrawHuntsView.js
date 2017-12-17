@@ -122,7 +122,8 @@ var MapView = Marionette.View.extend({
 			that.options.wmsLayer = L.tileLayer.wms('http://geoblaster.info:8080/geoserver/hunts/wms',{
 				 layers:'hunts:draw_hunt',
 				 format: 'image/png',
-	        	 transparent: true
+	        	 transparent: true,
+	        	 
 			});
 			that.options.map.addLayer(basemap)
 			that.options.map.addLayer(that.options.wmsLayer)
@@ -131,7 +132,10 @@ var MapView = Marionette.View.extend({
 
 			that.options.map.clicked=0;
 
+			
+
 			that.options.map.on('click', function(e){
+				
 				that.options.map.clicked = that.options.map.clicked+1;
 				setTimeout(function(){
 			        if(that.options.map.clicked == 1){

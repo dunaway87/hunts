@@ -38,12 +38,15 @@ module.exports = Marionette.LayoutView.extend({
 		this.options.map={};
 		this.options.wmsLayer={};
 		this.options.geojson={};
-
+		this.options.firstHunt={};
 		this.showModalHeader();
 		this.showModalFooter();
 		this.showModalMap();
 		this.showHunts();
 		//this.showHuntSummary();
+		
+			
+
 	},
 
 
@@ -76,13 +79,14 @@ module.exports = Marionette.LayoutView.extend({
 		that.getRegion('modal_map').show(new MapView(that.options))
 	},
 
-	showHunts:function(){
+	showHunts:function(options){
 
 		log.debug("filtermodel in  summaryview %o", FilterModel)
 
 		var that = this;
 		var lat = this.options.model.attributes.lat;
 		var lon = this.options.model.attributes.lon;
+
 
 		var url = "/pointData?lat="+lat+"&lon="+lon;
 		if(FilterModel.has("species")){
@@ -132,6 +136,8 @@ module.exports = Marionette.LayoutView.extend({
 				})
 				that.getRegion('modal_hunts').show(modal_hunts)
 
+				
+				
 
 				modal_hunts.on("childview:show:huntsummary", function(childview,args){
 					that.options.map.removeLayer(that.options.wmsLayer)
@@ -139,9 +145,7 @@ module.exports = Marionette.LayoutView.extend({
 					var hunt_summary = new HuntSummaryView({
 						model:args
 					})
-					var hunt_title_view = new HuntModalTitle({
-						model:args
-					})
+				
 					console.log("hunt args %o ", args.attributes)
 					
 					
@@ -180,6 +184,8 @@ module.exports = Marionette.LayoutView.extend({
 
 	initialize: function(options){
 		this.options = options;
+		console.log("show modal options %o ", this.options);
+		console.log("show modal model %o ", this.model)
 	}
 
 });	
@@ -220,18 +226,24 @@ var ModalFooterView = Backbone.Marionette.ItemView.extend({
 
 var HuntItem = Backbone.Marionette.ItemView.extend({
 	template:hunt_item_tmpl,
-	tagName:"tr",
+	tagName:"li",
+	className:"nav-item",
 	
 
 	events:{
 		'click': "showModalHuntSummary"
 
 	},
-
 	
+	onShow:function(){
+		this.trigger("show:huntsummary", this.model)
+	},
+
 
 	showModalHuntSummary: function(){
+		this.$el.addClass('active');
 		console.log("hunt item view %o ", this.model)
+		//$('td').addClass('.table-active');
 		this.trigger("show:huntsummary", this.model)
 
 	},
@@ -249,18 +261,20 @@ var HuntItem = Backbone.Marionette.ItemView.extend({
 	
 })
 
-var ModalHunts = Backbone.Marionette.CompositeView.extend({
+var ModalHunts = Backbone.Marionette.CollectionView.extend({
 
-	tagName:"table",
-	className:"table table-hover",
-	template:hunt_comp_tmpl,
+	tagName:"ul",
+	className:"nav nav-tabs",
+	//template:hunt_comp_tmpl,
 	childView: HuntItem,
 
+	
 
 	initialize:function(options){
 		var that = this;
 		this.options = options
 		this.collection = new Backbone.Collection(this.options.collection.models)
+		that.options.firstHunt = this.collection.models["0"];
 		
 	} 
 })

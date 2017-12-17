@@ -17,7 +17,7 @@
   background: rgba(255,255,255,0.85);
   position: absolute;
   right: 0;
-  height: 100%;
+  border-radius: 10px;
   width: 350px;
   z-index: 100;
 }
@@ -69,24 +69,13 @@ select2-dropdown.select2-dropdown--below {
 .head-control {
   padding-left: 8%;
 }
-#modal-dialog-override {
-  top: 0;
-  left: 0;
-  width: 100%;
+#modal-content-override {
   height: 100%;
-/* spacing as needed */
-  padding: 20px 50px 20px 20px;
-/* let it scroll */
-  overflow: auto;
 }
 #main {
   height: 100%;
   width: 100%;
   position: fixed;
-}
-.modal-body {
-  position: relative;
-  height: 600px;
 }
 .modal {
   position: relative;
@@ -96,6 +85,12 @@ select2-dropdown.select2-dropdown--below {
   left: auto;
   z-index: 1000;
   display: block;
+  height: 100%;
+  width: 100%;
+}
+.modal-lg {
+  height: 100%;
+  width: 100%;
 }
 #summary-modal {
   position: absolute;
@@ -103,17 +98,9 @@ select2-dropdown.select2-dropdown--below {
   height: 100%;
   display: none;
 }
-@media (min-width: 768px) {
-  .modal-xl {
-    width: 90%;
-    height: 90%;
-    max-width: 1500px;
-  }
-}
-@media (min-height: 400px) {
-  .modal-xl {
-    max-height: 1500px;
-  }
+.modal-summary {
+  min-width: 95%;
+  height: 90%;
 }
 #modal-map {
   float: left;
@@ -123,12 +110,11 @@ select2-dropdown.select2-dropdown--below {
 .modal-map-container {
   width: 100%;
   height: 100%;
-  padding-bottom: 5%;
 }
 .modal-map-wrap {
   float: left;
   width: 95%;
-  height: 50%;
+  height: 90%;
 }
 .modal-header .close {
   margin: 0;
@@ -160,6 +146,7 @@ select2-dropdown.select2-dropdown--below {
   height: 100%;
   position: absolute;
   padding-left: 30px;
+  top: 65px;
 }
 .hunt-modal-title-region {
   width: 25%;
@@ -182,6 +169,31 @@ select2-dropdown.select2-dropdown--below {
 #search-hunt {
   width: 250px;
   height: 28px;
+}
+.adv-control {
+  margin-right: 10px;
+}
+.adv-title {
+  position: absolute;
+  margin-top: 4px;
+}
+#advanced-filters-container {
+  cursor: pointer;
+}
+.material-icons.arrow-up {
+  display: none;
+}
+.success-head {
+  display: none;
+}
+.draw-head {
+  display: none;
+}
+.ui-widget-header {
+/* border: 1px solid #e78f08; */
+  background: #3b77a2;
+  color: #fff;
+  font-weight: bold;
 }
 
 /* 

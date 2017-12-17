@@ -22,25 +22,41 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 		subunits:"#subunits-container",
 		successrate:"#successrate-container",
 		drawrate:"#drawrate-container",
-		search_hunt:".search-container"
+		search_hunt:".search-container",
+		advanced_filters:"#advanced-filters-container"
+	},
+
+	events:{
+		'click #advanced-filters-container':'switchArrow'
 	},
 
 
 	onShow: function(options){
 		this.showFilters();
 		log.debug("side layout")
+		this.options.successrate={};
+		this.options.drawrate={};
 
 		
 	},
 
+	switchArrow:function(){
+		var that = this;
+		$(".arrow-down").toggle();
+		$(".arrow-up").toggle();
+		$(".success-head").toggle();
+		$(".draw-head").toggle();
+		that.showSliders();
+
+	},
 
 	showFilters: function(options){
 			
 		var that = this;
 			$.getJSON(api.filters(), function(filters){
-				//that.showSuccesFilter(filters.successrate);
-				//that.showDrawRate(filters.drawrate);
-
+				
+				that.options.successrate=filters.successrate;
+				that.options.drawrate=filters.drawrate;
 				log.debug("filters %o ", filters.species)
 				var species_filters_view = new SpeciesFiltersView({
 					model: new Backbone.Collection(filters.species.range)
@@ -91,11 +107,18 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 				subunits_filter_view.on('hunt:filter',function(data){
 					that.options.CQL_PARAMS.subunit=data
 					that.setWMSParamsCQL()
-				})		
-				
+				})
+
 			})
 
 		},
+
+		showSliders:function(){
+			var that = this;
+			that.showSuccesFilter(that.options.successrate);
+			that.showDrawRate(that.options.drawrate);
+		},
+
 		setWMSParamsCQL: function(){
 			var that = this;
 			var cqlFilters = "1=1";
@@ -133,11 +156,18 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 			var that= this;
 			log.debug("draw %o ", data.range)
 			var drawrate_view = new DrawRateView(data.range);
-
+			var maxDraw={};
+			var minDraw={};
 			that.getRegion('drawrate').show(drawrate_view);
-			drawrate_view.on('drawrate:filter', function(){
-				log.debug("drawrate filter %o ", FilterModel)
+			FilterModel.on('change:maxDrawRate',function(model,maxDrawRate){
+				console.log("change %o ", model.attributes.maxDrawRate);
+				maxDraw = model.attributes.maxDrawRate;
+				minDraw = model.attributes.minDrawRate;
+				that.options.wmsLayer.setParams({
+					CQL_FILTER:"draw_rate between "+ minDraw + " and " + maxDraw
+				})
 			})
+			
 		},
 
 
@@ -145,7 +175,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 			this.options = options;
 			log.debug("hehe %o ", options)
 			this.model = new Backbone.Model();
-		}
+		},
 
 
 	}); 
