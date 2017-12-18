@@ -21,7 +21,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 		summary_modal:"#summary-modal",
 	},
 
+	events:{
+		"keydown":"keyPress",
+	},
 
+	keyPress:function(e){
+		console.log("hehe %o", e)
+		if(e.which===27){
+			this.getRegion('summary_modal').empty({preventDestroy:true})
+			$('#summary-modal').css("display","none");
+		}
+	},
 
 	onShow:function(){
 		require.ensure([], function() {
@@ -47,7 +57,26 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 	},
 
 	showSidebar:function(options){
-		this.getRegion('sidebar_container').show(new SidebarView(options));
+		var sidebar_view = new SidebarView(options);
+		var that = this;
+		sidebar_view.on("panTo",function(data){
+
+			console.log("lkjna;lksdfljk;sdnflk;dsnflkds : %o", that.options.map.zoom)
+
+			var zoom = that.options.map.options.zoom;
+			if(zoom <6){
+				zoom = 6;
+			}
+
+
+
+
+			that.options.map.setView([data.lat,data.lon],zoom)
+
+		})
+
+		this.getRegion('sidebar_container').show(sidebar_view);
+		
 	},
 
 

@@ -51,6 +51,11 @@ module.exports = Backbone.Marionette.CompositeView.extend({
 
 		 FilterModel.set("unit",model.label)
 		 this.trigger("hunt:filter", model.label);
+
+		 this.trigger("hunt:panTo", model.centroid)
+
+
+
 	},
 
 	initialize:function(options){

@@ -103,7 +103,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 					that.setWMSParamsCQL()
 
 				})	
+				units_filter_view.on('hunt:panTo',function(data){
+					that.trigger("panTo", data)
 
+				})	
 				subunits_filter_view.on('hunt:filter',function(data){
 					that.options.CQL_PARAMS.subunit=data
 					that.setWMSParamsCQL()

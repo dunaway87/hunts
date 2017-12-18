@@ -21,10 +21,21 @@ module.exports = Marionette.LayoutView.extend({
 	regions:{
 		modal_map:'.modal-map-container',
 		modal_hunts:'.modal-hunts',
-		modal_hunt_title:'.hunt-modal-title-region',
+		modal_hunt_title:'.hunt-summary-title',
 		modal_hunt_summary:'.modal-hunt-summary',
-		modal_header:'#hunt-modal-header',
+		
 		modal_footer:'#hunt-modal-footer',
+	},
+
+	events:{
+		"keyup":"keyPress",
+	},
+
+	keyPress:function(e){
+		console.log(e)
+		if(e.which===27){
+			this.trigger("close:modal")
+		}
 	},
 
 	onShow: function(){
@@ -39,7 +50,7 @@ module.exports = Marionette.LayoutView.extend({
 		this.options.wmsLayer={};
 		this.options.geojson={};
 		this.options.firstHunt={};
-		this.showModalHeader();
+		//this.showModalHeader();
 		this.showModalFooter();
 		this.showModalMap();
 		this.showHunts();
@@ -48,6 +59,7 @@ module.exports = Marionette.LayoutView.extend({
 			
 
 	},
+
 
 
 	showModalHeader: function(){
@@ -59,6 +71,9 @@ module.exports = Marionette.LayoutView.extend({
 			console.log("heheclose")
 			that.trigger("shuttle:close");
 		})
+
+
+		//that.showHunts();
 
 	},
 
@@ -123,6 +138,7 @@ module.exports = Marionette.LayoutView.extend({
 		var collection = new HuntCollection();
 		var modal_hunts = {}
 		var layergroup = new L.LayerGroup();
+
 		collection.fetch().done(function(){
 			console.log("collection %o ", collection)
 
@@ -138,11 +154,40 @@ module.exports = Marionette.LayoutView.extend({
 
 				
 				
+				
+					args = collection.models[0]
+					var hunt_summary = new HuntSummaryView({
+						model:args
+					})
+					var hunt_title_view = new HuntModalTitle({
+						model:args
+					})
+				
+					that.options.wmsLayer = L.tileLayer.wms('http://geoblaster.info:8080/geoserver/hunts/wms',{
+						 layers:'hunts:draw_hunt',
+						 format: 'image/png',
+			        	 transparent: true,
+			        	
+					});
+
+					that.options.wmsLayer.setParams({
+						CQL_FILTER:"hunt = '"+args.attributes.label+"'"
+					})
+					that.options.map.addLayer(that.options.wmsLayer);
+					that.options.map.setView([args.attributes.zoom.lat,args.attributes.zoom.lon],(7+args.attributes.zoom.zoom));
+
+					that.getRegion('modal_hunt_summary').show(hunt_summary)
+					that.getRegion('modal_hunt_title').show(hunt_title_view)
+
+
 
 				modal_hunts.on("childview:show:huntsummary", function(childview,args){
 					that.options.map.removeLayer(that.options.wmsLayer)
 					console.log("hunt summary %o ", args)
 					var hunt_summary = new HuntSummaryView({
+						model:args
+					})
+					var hunt_title_view = new HuntModalTitle({
 						model:args
 					})
 				
@@ -168,6 +213,7 @@ module.exports = Marionette.LayoutView.extend({
 						CQL_FILTER:"hunt = '"+args.attributes.label+"'"
 					})
 					that.options.map.addLayer(that.options.wmsLayer)
+					that.options.map.setView([args.attributes.zoom.lat,args.attributes.zoom.lon],(7+args.attributes.zoom.zoom));
 
 					that.getRegion('modal_hunt_summary').show(hunt_summary)
 					that.getRegion('modal_hunt_title').show(hunt_title_view)
@@ -190,13 +236,33 @@ module.exports = Marionette.LayoutView.extend({
 
 });	
 
+var HuntModalTitle = Backbone.Marionette.ItemView.extend({
+	template:hunt_title_tmpl,
+	
 
-var ModalHeaderView = Backbone.Marionette.ItemView.extend({
+	serializeData: function(){
+		
+		return {
+			label:this.model.get("label"),
+			
+		}
+	},
+})
+
+
+
+
+var ModalHeaderView = Backbone.Marionette.LayoutView.extend({
 	template:header_tmpl,
+
 
 	triggers:{
 		"click .close": "close:modal",
+
 	},
+
+
+
 
 	closeModal:function(){
 		var that = this;
@@ -213,6 +279,7 @@ var ModalFooterView = Backbone.Marionette.ItemView.extend({
 	triggers:{
 		"click .footer-closer":"close:modal",
 	},
+	
 
 	closeModal:function(e){
 		e.preventDefault();
@@ -229,19 +296,24 @@ var HuntItem = Backbone.Marionette.ItemView.extend({
 	tagName:"li",
 	className:"nav-item",
 	
+	ui:{
+		nav_link:'nav-link'
+	},
 
 	events:{
 		'click': "showModalHuntSummary"
 
 	},
-	
-	onShow:function(){
-		this.trigger("show:huntsummary", this.model)
+	onShow: function()	{
+		if(this.model.get("childNumber")===0){
+			$(this.$el.children()[0]).addClass('active')
+		}
 	},
-
-
+	
 	showModalHuntSummary: function(){
-		this.$el.addClass('active');
+
+		$('.nav-link').removeClass('active');
+		this.$el.children().addClass('active');
 		console.log("hunt item view %o ", this.model)
 		//$('td').addClass('.table-active');
 		this.trigger("show:huntsummary", this.model)
@@ -256,8 +328,15 @@ var HuntItem = Backbone.Marionette.ItemView.extend({
 
 		}
 		
-	}
+	},
+	initialize:function(options){
+		var that = this;
+		if(options.model.get("childNumber") == 0){
+			that.showModalHuntSummary();
+			this.trigger("show:huntsummary", this.model)
 
+		}
+	}
 	
 })
 
@@ -274,7 +353,6 @@ var ModalHunts = Backbone.Marionette.CollectionView.extend({
 		var that = this;
 		this.options = options
 		this.collection = new Backbone.Collection(this.options.collection.models)
-		that.options.firstHunt = this.collection.models["0"];
 		
 	} 
 })
@@ -306,6 +384,7 @@ var HuntSummaryItem = Backbone.Marionette.ItemView.extend({
 		}
 	},
 
+
 	initialize:function(options){
 		this.options = options
 		
@@ -317,7 +396,7 @@ var HuntSummaryView = Backbone.Marionette.CompositeView.extend({
 	template:hunt_summary_comp_tmpl,
 	childView:HuntSummaryItem,
 	tagName:"table",
-	className:"table table-striped",
+	className:"table table-striped table-bordered",
 
 	initialize:function(options){
 		var that = this;
@@ -344,9 +423,9 @@ var MapView = Marionette.View.extend({
 		
 		that.options.map = L.map('modal-map',{
 			center:[that.model.attributes.lat, that.model.attributes.lon],
-			zoom:6,
-				
-		});
+			zoom:7,
+					
+					});
 	    var mapboxID ='dunaway87.hffcoej7';
 			
 		var	basemap = L.tileLayer('https://{s}.tiles.mapbox.com/v3/'+mapboxID+'/{z}/{x}/{y}.png', {

@@ -42,7 +42,7 @@ public class PointData {
 			Logger.info(pstmt.toString());
 			
 			ResultSet rs = pstmt.executeQuery();
-
+			int count = 0;
 			while(rs.next()){
 				String huntId =rs.getString(1);
 				String species = rs.getString(2);
@@ -75,7 +75,7 @@ public class PointData {
 				
 				hunt.addProperty("label", huntId);
 				hunt.add("properties", properties);
-				
+				hunt.addProperty("childNumber", count);
 				JsonObject zoom = new JsonObject();
 				zoom.addProperty("lat", y);
 				zoom.addProperty("lon", x);
@@ -84,6 +84,7 @@ public class PointData {
 				//hunt.add("geometry", getGeometry(polygon));
 				huntsArray.add(hunt);
 				hunts.add("data", huntsArray);
+				count++;
 			}
 			
 			
