@@ -14,7 +14,7 @@ import com.google.gson.JsonObject;
 
 public class Unit {
 	public static class SQL {
-		public static String GET_UNIT = "SELECT DISTINCT unit FROM hunt.draw_hunt ORDER BY unit ASC";
+		public static String GET_UNIT = "SELECT DISTINCT unit, y,x FROM hunt.unit ORDER BY unit ASC";
 		public static String GET_SUBUNIT = "SELECT DISTINCT subunit,id FROM hunt.subunit ORDER BY subunit ASC";
 	}
 	
@@ -60,6 +60,10 @@ public class Unit {
 				JsonObject item = new JsonObject();
 				item.addProperty("label", rs.getInt(1));
 				item.addProperty("value", rs.getInt(1));
+				JsonObject centroid = new JsonObject();
+				centroid.addProperty("lat", rs.getDouble(2));
+				centroid.addProperty("lon", rs.getDouble(3));
+				item.add("centroid", centroid);
 				range.add(item);
 			}
 			

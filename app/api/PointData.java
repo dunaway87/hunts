@@ -54,10 +54,13 @@ public class PointData {
 				String unit = rs.getString(8);
 				//String polygon = rs.getString(9);
 				String description = rs.getString(9);
-
+				double x = rs.getDouble(10);
+				double y = rs.getDouble(11);
+				int zoomDesc = rs.getInt(12);
+				
+				
 				JsonObject hunt = new JsonObject();
 				
-				JsonObject data = new JsonObject();
 				
 				
 				JsonArray properties = new JsonArray();
@@ -72,8 +75,13 @@ public class PointData {
 				
 				hunt.addProperty("label", huntId);
 				hunt.add("properties", properties);
+				
+				JsonObject zoom = new JsonObject();
+				zoom.addProperty("lat", y);
+				zoom.addProperty("lon", x);
+				zoom.addProperty("zoom", zoomDesc);
+				hunt.add("zoom", zoom);
 				//hunt.add("geometry", getGeometry(polygon));
-				data.add("data", hunt);
 				huntsArray.add(hunt);
 				hunts.add("data", huntsArray);
 			}
