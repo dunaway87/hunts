@@ -112,8 +112,8 @@ module.exports = Marionette.LayoutView.extend({
 			url = url +"&unit="+FilterModel.get("unit")
 		}
 
-		if(FilterModel.has("subunit")){
-			url = url +"&subunit="+FilterModel.get("subunit")
+		if(FilterModel.has("residence")){
+			url = url +"&residence="+FilterModel.get("residence")
 		}
 
 

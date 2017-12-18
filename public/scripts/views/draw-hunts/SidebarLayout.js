@@ -67,7 +67,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 				})
 
 				var subunits_filter_view = new SubunitsFilterView({
-					model: new Backbone.Collection(filters.subunit.range)
+					model: new Backbone.Collection(filters.residence.range)
 				})
 
 				var search_hunt = new SearchHunt();
@@ -108,7 +108,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 				})	
 				subunits_filter_view.on('hunt:filter',function(data){
-					that.options.CQL_PARAMS.subunit=data
+					that.options.CQL_PARAMS.residency=data
 					that.setWMSParamsCQL()
 				})
 
@@ -130,7 +130,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 					cqlFilters = cqlFilters+" and "+key +"='"+ that.options.CQL_PARAMS[key]+"'";
 				}
 			}			
-
+			console.log("sql %o ", cqlFilters)
 			that.options.wmsLayer.setParams({
 				CQL_FILTER:cqlFilters
 			})
