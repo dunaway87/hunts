@@ -12,14 +12,10 @@ public abstract class ControllerArgs {
 
 	public static void setRenderArgs() {
 		RenderArgs renderArgs = Scope.RenderArgs.current();
-		if(StringUtils.isEmpty(Play.configuration.getProperty("root.url"))) {
-			renderArgs.put("rootUrl",Play.configuration.getProperty("root.url"));
+		renderArgs.put("rootUrl", "/"+Play.configuration.getProperty("root.url"));
 
-		}else {
-			renderArgs.put("rootUrl",Play.configuration.getProperty("root.url"));
-		}
 		renderArgs.put("minify", getMinifySetting());
-
+	
 		Logger.info("initView route: %s", getRoute());
 	}
 
