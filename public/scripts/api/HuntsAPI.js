@@ -1,11 +1,11 @@
 //ExampleAPI
 module.exports = {
 	filters: function() {
-		return Mustache.render("/api/hunts/filters");
+		return Mustache.render("/{{{rootUrl}}}/api/hunts/filters", {rootUrl:rootUrl});
 	},
 
 	pointData: function(lat, lon){
-		return Mustache.render("api/hunts/pointData")
+		return Mustache.render("/{{{rootUrl}}}/api/hunts/pointData", {rootUrl:rootUrl})
 	}
 	
 }

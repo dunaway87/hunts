@@ -4,7 +4,8 @@
 
 # Home page
 GET     /                                       Blank.index
-
+GET		/hunts									Blank.index
+GET		/hunts/									Blank.index
 
 #api routes are not visible to users, e.g. ajax requests
 GET     /filters								Application.getFilters
