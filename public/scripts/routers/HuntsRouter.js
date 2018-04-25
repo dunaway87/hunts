@@ -4,7 +4,7 @@ var DrawHuntsView = require('views/draw-hunts/DrawHuntsView');
 //Router
 module.exports = Backbone.Router.extend({
 	routes: {
-		'': 'drawHunts',
+		'/hunts': 'drawHunts',
 		
 	},
 	drawHunts: function() {
