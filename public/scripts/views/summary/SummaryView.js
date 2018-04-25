@@ -103,7 +103,7 @@ module.exports = Marionette.LayoutView.extend({
 		var lon = this.options.model.attributes.lon;
 
 
-		var url = "/pointData?lat="+lat+"&lon="+lon;
+		var url = api.pointData(lat,lon,rootUrl);
 		if(FilterModel.has("species")){
 			url = url +"&species="+FilterModel.get("species")
 		}
