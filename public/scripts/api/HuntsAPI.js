@@ -1,10 +1,10 @@
 //ExampleAPI
 module.exports = {
-	filters: function() {
+	filters: function(rootUrl) {
 		return Mustache.render("{{{rootUrl}}}/api/hunts/filters", {rootUrl:rootUrl});
 	},
 
-	pointData: function(lat, lon){
+	pointData: function(lat, lon,rootUrl){
 		return Mustache.render("{{{rootUrl}}}/api/hunts/pointData", {rootUrl:rootUrl})
 	}
 	

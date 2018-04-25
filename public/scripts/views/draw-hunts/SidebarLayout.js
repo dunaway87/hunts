@@ -53,7 +53,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 	showFilters: function(options){
 			
 		var that = this;
-			$.getJSON(api.filters(), function(filters){
+			$.getJSON(api.filters(rootUrl), function(filters){
 				
 				that.options.successrate=filters.successrate;
 				that.options.drawrate=filters.drawrate;
