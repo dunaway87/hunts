@@ -11,6 +11,8 @@ GET		/hunts/									Blank.index
 GET     /filters								Application.getFilters
 GET     /hunts/filters								Application.getFilters
 
+GET 	/api/filters						Application.getFilters
+GET 	/hunts/api/filters						Application.getFilters
 
 
 GET		/api/pointData								Application.getPointData
