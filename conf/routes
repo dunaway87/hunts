@@ -9,13 +9,14 @@ GET		/hunts/									Blank.index
 
 #api routes are not visible to users, e.g. ajax requests
 GET     /filters								Application.getFilters
+GET     /hunts/filters								Application.getFilters
 
 GET 	/api/hunts/filters						Application.getFilters
+GET 	/hunts/api/hunts/filters						Application.getFilters
+
 
 GET		/pointData								Application.getPointData
-
-
-GET		/pointData								Application.getPointData
+GET		/hunts/pointData								Application.getPointData
 
 
 # Ignore favicon requests
@@ -23,7 +24,7 @@ GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
-GET     /crime/public/                                staticDir:public
+GET     /hunts/public/                                staticDir:public
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
