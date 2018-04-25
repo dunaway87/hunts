@@ -15,8 +15,8 @@ GET 	/api/hunts/filters						Application.getFilters
 GET 	/hunts/api/hunts/filters						Application.getFilters
 
 
-GET		/pointData								Application.getPointData
-GET		/hunts/pointData								Application.getPointData
+GET		/api/pointData								Application.getPointData
+GET		/hunts/api/pointData						Application.getPointData
 
 
 # Ignore favicon requests
