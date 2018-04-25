@@ -12,6 +12,7 @@ public abstract class ControllerArgs {
 
 	public static void setRenderArgs() {
 		RenderArgs renderArgs = Scope.RenderArgs.current();
+		renderArgs.put("rootUrl", "/"+Play.configuration.getProperty("root.url"));
 
 		renderArgs.put("minify", getMinifySetting());
 	
