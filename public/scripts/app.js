@@ -62,7 +62,7 @@ var MapView = require('views/draw-hunts/MapView.js');
 			
 			app.router = app.routers.hunts;
 
-			//app.router.navigate(HuntsRoutes.drawHunts(), true);
+			app.router.navigate(HuntsRoutes.drawHunts(), true);
 		}
 	};
 
