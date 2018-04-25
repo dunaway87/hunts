@@ -5,7 +5,7 @@ module.exports = {
 	},
 
 	pointData: function(lat, lon,rootUrl){
-		return Mustache.render("{{{rootUrl}}}/api/hunts/pointData", {rootUrl:rootUrl})
+		return Mustache.render("{{{rootUrl}}}/api/hunts/pointData?lat={{lat}}&lon={{lon}}", {rootUrl:rootUrl,lat:lat,lon:lon})
 	}
 	
 }
